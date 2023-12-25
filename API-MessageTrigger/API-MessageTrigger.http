@@ -1,0 +1,6 @@
+@API_MessageTrigger_HostAddress = http://localhost:5136
+
+GET {{API_MessageTrigger_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
