@@ -15,15 +15,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{482EA2FD-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossCutting", "CrossCutting", "{FEE69218-DEAF-4F7D-9E37-B8A8ABD61B30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-MessageTrigger", "API-MessageTrigger\API-MessageTrigger.csproj", "{E586443E-353F-40EB-B577-4AF7196D62C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API-MessageTrigger", "API-MessageTrigger\API-MessageTrigger.csproj", "{E586443E-353F-40EB-B577-4AF7196D62C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-MessageTrigger.Domain", "API-MessageTrigger.Domain\API-MessageTrigger.Domain.csproj", "{597416AB-DBD8-4D79-9EC5-E74479CD7A67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API-MessageTrigger.Domain", "API-MessageTrigger.Domain\API-MessageTrigger.Domain.csproj", "{597416AB-DBD8-4D79-9EC5-E74479CD7A67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-MessageTrigger.Infra.Data", "API-MessageTrigger.Infra.Data\API-MessageTrigger.Infra.Data.csproj", "{04E34D27-485E-4A3E-A96A-14360609A2DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API-MessageTrigger.Infra.Data", "API-MessageTrigger.Infra.Data\API-MessageTrigger.Infra.Data.csproj", "{04E34D27-485E-4A3E-A96A-14360609A2DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-MessageTrigger.Infra.CrossCutting", "API-MessageTrigger.Infra.CrossCutting\API-MessageTrigger.Infra.CrossCutting.csproj", "{72D1679B-1E45-40D2-B657-7B0B0012A7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API-MessageTrigger.Infra.CrossCutting", "API-MessageTrigger.Infra.CrossCutting\API-MessageTrigger.Infra.CrossCutting.csproj", "{72D1679B-1E45-40D2-B657-7B0B0012A7B7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{597416AB-DBD8-4D79-9EC5-E74479CD7A67} = {597416AB-DBD8-4D79-9EC5-E74479CD7A67}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-MessageTrigger.Service", "API-MessageTrigger.Service\API-MessageTrigger.Service.csproj", "{04908274-2984-4FB8-A0E4-3D230889B976}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API-MessageTrigger.Service", "API-MessageTrigger.Service\API-MessageTrigger.Service.csproj", "{04908274-2984-4FB8-A0E4-3D230889B976}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

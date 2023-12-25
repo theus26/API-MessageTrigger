@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API-MessageTrigger.Domain\API-MessageTrigger.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
