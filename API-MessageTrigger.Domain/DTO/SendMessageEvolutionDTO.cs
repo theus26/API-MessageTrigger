@@ -1,12 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace API_MessageTrigger.Domain.DTO
 {
     public class SendMessageEvolutionDTO
     {
+        [JsonProperty("number")]
         public string Number { get; set; }
         public Options Options { get; set; }
         public MediaMessage? MediaMessage { get; set; }
+        [JsonProperty("textMessage")]
         public Textmessage TextMessage { get; set; }
     }
 
@@ -19,6 +22,7 @@ namespace API_MessageTrigger.Domain.DTO
 
     public class Textmessage
     {
+        [JsonProperty("text")]
         public string Text { get; set; }
     }
     public class MediaMessage

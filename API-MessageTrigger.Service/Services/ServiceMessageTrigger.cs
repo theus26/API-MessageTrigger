@@ -2,27 +2,37 @@
 using API_MessageTrigger.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
-using System.Net.Mail;
 
 namespace API_MessageTrigger.Service.Services
 {
     public class ServiceMessageTrigger : IServiceMessageTrigger
     {
-        public async Task<bool> ProcessMessage(AttachmentDTO attachment)
+        private readonly IRequestEvolutionApi _requestEvolutionApi;
+
+        public ServiceMessageTrigger(IRequestEvolutionApi requestEvolutionApi)
+        {
+            _requestEvolutionApi = requestEvolutionApi;
+        }
+
+        public async Task<ResultNumbersDTO> ProcessMessage(AttachmentDTO attachment)
         {
             try
             {
                 var extractData = ExtractDataCsv(attachment).Result;
                 string MessageBase64 = "";
-                if (attachment.ImageBase64 is not null)
+                List<string> NumerosSucess = new List<string>();
+                List<string> NumerosErros = new List<string>();
+                var ResultNumbersDTO = new ResultNumbersDTO();
+
+                if (attachment.MediaBase64 is not null)
                 {
-                    MessageBase64 = ConvertForBase64(attachment.ImageBase64);
+                    MessageBase64 = ConvertForBase64(attachment.MediaBase64);
                 }
 
                 //Chamar Request
                 foreach (var numero in extractData)
                 {
-                    if (attachment.ImageBase64 is not null)
+                    if (attachment.MediaBase64 is not null)
                     {
                         var BodyRequest = new SendMessageEvolutionDTO()
                         {
@@ -39,11 +49,51 @@ namespace API_MessageTrigger.Service.Services
                             }
                         };
 
+                        var sendMensage = _requestEvolutionApi.SendMessageWhatsapp(BodyRequest).Result;
 
+                        if (sendMensage)
+                        {
+                            NumerosSucess.Add(BodyRequest.Number);
+                            ResultNumbersDTO.NumberSucess = NumerosSucess;
+                        }
+                        else
+                        {
+                            NumerosErros.Add(BodyRequest.Number);
+                            ResultNumbersDTO.NumberError = NumerosErros;
+                        }
+                    }
+                    else
+                    {
+                        var BodyRequest = new SendMessageEvolutionDTO()
+                        {
+                            Number = numero,
+                            Options = new Options
+                            {
+                                Delay = 1200,
+                                Presence = "composing",
+                                LinkPreview = false
+                            },
+                            TextMessage = new Textmessage()
+                            {
+                                Text = attachment.Text,
+                            }
+                        };
+                        var sendMensage = _requestEvolutionApi.SendMessageWhatsapp(BodyRequest).Result;
+
+                        if (sendMensage)
+                        {
+                            NumerosSucess.Add(BodyRequest.Number);
+                            ResultNumbersDTO.NumberSucess = NumerosSucess;
+                        }
+                        else
+                        {
+                            NumerosErros.Add(BodyRequest.Number);
+                            ResultNumbersDTO.NumberError = NumerosErros;
+                        }
                     }
                 }
-             return true;
-        }
+                return ResultNumbersDTO;
+            }
             catch
             {
                 throw;

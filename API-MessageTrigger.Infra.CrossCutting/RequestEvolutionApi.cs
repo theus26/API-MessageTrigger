@@ -1,7 +1,8 @@
 ﻿using API_MessageTrigger.Domain.DTO;
 using API_MessageTrigger.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace API_MessageTrigger.Infra.CrossCutting
 {
@@ -27,11 +28,28 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
                 //Iniciando a request
                 var client = _httpClientFactory.CreateClient();
+                try
+                {
+                    // Serializa o objeto para formato JSON
+                    var requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
 
+                    //Adiciona Header
+                    client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
+                    // Cria o conteúdo da requisição com o corpo (body) em formato JSON
+                    var httpContent = new StringContent(requestBodyJson, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(UrlEvolution, httpContent);
 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
 
-                var response = await client.PostAsync(UrlEvolution);
-
+                    return false;
+                }
+                catch
+                {
+                    throw;
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -46,11 +64,11 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
             if (mediaType is null)
             {
-                return Url = $"{Url}/message/sendText/instance (Instance name)";
+                return Url = $"{Url}/message/sendText/teste";
             }
             else
             {
-                return Url = $"{Url}//message/sendMedia/instance (Instance name)";
+                return Url = $"{Url}//message/sendMedia/teste";
             }
         }
     }
