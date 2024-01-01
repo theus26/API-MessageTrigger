@@ -24,7 +24,7 @@ namespace API_MessageTrigger.Domain.DTO
     public class MediaMessage
     {
         public string? MediaType { get; set; }
-        public string Caption { get; set; }
+        public string? Caption { get; set; }
         [JsonPropertyName("Media")]
         public string Base64 { get; set; }
     }

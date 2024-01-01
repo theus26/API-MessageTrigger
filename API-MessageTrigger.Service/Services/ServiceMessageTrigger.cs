@@ -1,5 +1,6 @@
 ﻿using API_MessageTrigger.Domain.DTO;
 using API_MessageTrigger.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using System.Net.Mail;
 
@@ -7,18 +8,42 @@ namespace API_MessageTrigger.Service.Services
 {
     public class ServiceMessageTrigger : IServiceMessageTrigger
     {
-        public async Task<bool> ProcessMessage(attachmentDTO attachment)
+        public async Task<bool> ProcessMessage(AttachmentDTO attachment)
         {
             try
             {
                 var extractData = ExtractDataCsv(attachment).Result;
+                string MessageBase64 = "";
+                if (attachment.ImageBase64 is not null)
+                {
+                    MessageBase64 = ConvertForBase64(attachment.ImageBase64);
+                }
+
                 //Chamar Request
                 foreach (var numero in extractData)
                 {
-                    
+                    if (attachment.ImageBase64 is not null)
+                    {
+                        var BodyRequest = new SendMessageEvolutionDTO()
+                        {
+                            Number = numero,
+                            Options = new Options
+                            {
+                                Delay = 1200,
+                                Presence = "composing",
+                            },
+                            MediaMessage = new MediaMessage()
+                            {
+                                MediaType = "image",
+                                Base64 = MessageBase64
+                            }
+                        };
+
+
+                    }
                 }
-                return true;
-            }
+             return true;
+        }
             catch
             {
                 throw;
@@ -26,7 +51,23 @@ namespace API_MessageTrigger.Service.Services
 
         }
 
-        private async Task<List<string>> ExtractDataCsv(attachmentDTO attachment)
+        private string ConvertForBase64(IFormFile file)
+        {
+            try
+            {
+                using var ms = new MemoryStream();
+                file.CopyTo(ms);
+                var fileByte = ms.ToArray();
+                string base64 = Convert.ToBase64String(fileByte);
+                return base64;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private async Task<List<string>> ExtractDataCsv(AttachmentDTO attachment)
         {
             try
             {

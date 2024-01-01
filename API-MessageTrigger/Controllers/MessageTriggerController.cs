@@ -1,14 +1,13 @@
 ﻿using API_MessageTrigger.Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml;
 namespace API_MessageTrigger.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
     public class MessageTriggerController : ControllerBase
     {
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadExcel([FromForm] attachmentDTO attachment)
+        [HttpPost]
+        public async Task<IActionResult> SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
             if (attachment == null || attachment.File.Length == 0)
             {

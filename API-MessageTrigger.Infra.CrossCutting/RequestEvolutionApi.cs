@@ -21,12 +21,15 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         public async Task<bool> SendMessageWhatsapp(SendMessageEvolutionDTO sendMessageEvolution)
         {
-            var UrlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
-            //Iniciando a request
-            var client = _httpClientFactory.CreateClient();
-
             try
             {
+                var UrlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
+
+                //Iniciando a request
+                var client = _httpClientFactory.CreateClient();
+
+
+
                 var response = await client.PostAsync(UrlEvolution);
 
             }
