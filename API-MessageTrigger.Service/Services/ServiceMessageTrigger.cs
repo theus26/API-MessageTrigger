@@ -45,6 +45,7 @@ namespace API_MessageTrigger.Service.Services
                             MediaMessage = new MediaMessage()
                             {
                                 MediaType = "image",
+                                Caption = attachment.Text,
                                 Base64 = MessageBase64
                             }
                         };
