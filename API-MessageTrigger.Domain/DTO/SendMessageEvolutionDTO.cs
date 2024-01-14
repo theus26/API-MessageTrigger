@@ -8,6 +8,7 @@ namespace API_MessageTrigger.Domain.DTO
         [JsonProperty("number")]
         public string Number { get; set; }
         public Options Options { get; set; }
+        [JsonProperty("mediaMessage")]
         public MediaMessage? MediaMessage { get; set; }
         [JsonProperty("textMessage")]
         public Textmessage TextMessage { get; set; }
@@ -27,9 +28,10 @@ namespace API_MessageTrigger.Domain.DTO
     }
     public class MediaMessage
     {
+        [JsonProperty("mediatype")]
         public string? MediaType { get; set; }
         public string? Caption { get; set; }
-        [JsonPropertyName("Media")]
+        [JsonPropertyName("media")]
         public string Base64 { get; set; }
     }
 

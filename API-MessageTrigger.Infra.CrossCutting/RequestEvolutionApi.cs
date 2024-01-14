@@ -24,14 +24,14 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             try
             {
-                var UrlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
+                string UrlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
 
                 //Iniciando a request
                 var client = _httpClientFactory.CreateClient();
                 try
                 {
                     // Serializa o objeto para formato JSON
-                    var requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
+                    string requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
 
                     //Adiciona Header
                     client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
@@ -64,11 +64,11 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
             if (mediaType is null)
             {
-                return Url = $"{Url}/message/sendText/teste";
+                return $"{Url}/message/sendText/trigger";
             }
             else
             {
-                return Url = $"{Url}//message/sendMedia/teste";
+                return $"{Url}/message/sendMedia/trigger";
             }
         }
     }

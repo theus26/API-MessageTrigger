@@ -18,7 +18,7 @@ namespace API_MessageTrigger.Controllers
         {
             try
             {
-                var processMensage = _serviceMessageTrigger.ProcessMessage(attachment).Result;
+                var processMensage =  _serviceMessageTrigger.ProcessMessage(attachment).Result;
                 return Ok(processMensage);
             }
             catch (Exception ex)
