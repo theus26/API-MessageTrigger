@@ -1,4 +1,5 @@
 ﻿using API_MessageTrigger.Domain.DTO;
+using API_MessageTrigger.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 namespace API_MessageTrigger.Controllers
 {
@@ -6,22 +7,27 @@ namespace API_MessageTrigger.Controllers
     [Route("[controller]/[action]")]
     public class MessageTriggerController : ControllerBase
     {
+        private readonly IServiceMessageTrigger _serviceMessageTrigger;
+        public MessageTriggerController(IServiceMessageTrigger serviceMessage)
+        {
+            _serviceMessageTrigger = serviceMessage;
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
-            if (attachment == null || attachment.File.Length == 0)
-            {
-                return BadRequest("Arquivo não fornecido.");
-            }
-
             try
             {
-
-                return Ok("Dados extraídos com sucesso.");
+                var processMensage =  _serviceMessageTrigger.ProcessMessage(attachment).Result;
+                return Ok(processMensage);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao processar o arquivo: {ex.Message}");
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseDTO()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Error = ex.Message,
+                });
             }
         }
     }
