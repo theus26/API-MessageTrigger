@@ -1,5 +1,7 @@
+using API_MessageTrigger.Domain.Entities;
 using API_MessageTrigger.Domain.Interfaces;
 using API_MessageTrigger.Infra.CrossCutting;
+using API_MessageTrigger.Infra.Data.Repository;
 using API_MessageTrigger.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IBaseRepository<MessageTrigger>, BaseRepository<MessageTrigger>>();
+builder.Services.AddScoped<IBaseService<MessageTrigger>, BaseService<MessageTrigger>>();
 builder.Services.AddScoped<IRequestEvolutionApi, RequestEvolutionApi>();
 builder.Services.AddScoped<IServiceMessageTrigger, ServiceMessageTrigger>();
 builder.Services.AddHttpClient();

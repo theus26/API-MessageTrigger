@@ -30,5 +30,25 @@ namespace API_MessageTrigger.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateIntance(CreateInstanceEvolutionDTO CreateInstanceEvolution)
+        {
+            try
+            {
+                var createInstance = _serviceMessageTrigger.CreateInstance(CreateInstanceEvolution);
+                return Ok(createInstance);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseDTO()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Error = ex.Message,
+                });
+            }
+
+
+        }
     }
 }

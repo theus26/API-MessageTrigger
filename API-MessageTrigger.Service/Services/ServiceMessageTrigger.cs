@@ -1,5 +1,7 @@
 ﻿using API_MessageTrigger.Domain.DTO;
+using API_MessageTrigger.Domain.Entities;
 using API_MessageTrigger.Domain.Interfaces;
+using API_MessageTrigger.Service.Validators;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 
@@ -8,10 +10,31 @@ namespace API_MessageTrigger.Service.Services
     public class ServiceMessageTrigger : IServiceMessageTrigger
     {
         private readonly IRequestEvolutionApi _requestEvolutionApi;
+        private IBaseService<MessageTrigger> _baseUserService;
 
-        public ServiceMessageTrigger(IRequestEvolutionApi requestEvolutionApi)
+        public ServiceMessageTrigger(IRequestEvolutionApi requestEvolutionApi, IBaseService<MessageTrigger> baseService)
         {
             _requestEvolutionApi = requestEvolutionApi;
+            _baseUserService = baseService;
+        }
+
+        public string CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
+        {
+            var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution);
+
+            //TODO: adicionar auto mapper
+            //Salvar no banco
+            var MessageTrigger = new MessageTrigger()
+            {
+                NameInstance = createInstanceEvolution.InstanceName,
+                PhoneNumber = createInstanceEvolution.Number,
+                Token = createInstanceEvolution.Token,
+            };
+
+            var addInstance = _baseUserService.Add<MessageTriggerValidator>(MessageTrigger).Id;
+            return getBase64.Result;
+
+
         }
 
         public async Task<ResultNumbersDTO> ProcessMessage(AttachmentDTO attachment)
