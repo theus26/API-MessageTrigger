@@ -4,7 +4,7 @@ namespace API_MessageTrigger.Domain.Interfaces
 {
     public interface IRequestEvolutionApi
     {
-        void CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution);
+        Task<string> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution);
         Task<bool> SendMessageWhatsapp(SendMessageEvolutionDTO sendMessageEvolution);
     }
 }

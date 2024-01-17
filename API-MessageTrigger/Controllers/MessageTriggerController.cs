@@ -13,6 +13,12 @@ namespace API_MessageTrigger.Controllers
             _serviceMessageTrigger = serviceMessage;
         }
 
+        [HttpGet]
+        public IActionResult HeathCheck()
+        {
+            return Ok("I´am alive");
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
@@ -29,6 +35,26 @@ namespace API_MessageTrigger.Controllers
                     Error = ex.Message,
                 });
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateIntance(CreateInstanceEvolutionDTO CreateInstanceEvolution)
+        {
+            try
+            {
+                var createInstance = _serviceMessageTrigger.CreateInstance(CreateInstanceEvolution);
+                return Ok(createInstance);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseDTO()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Error = ex.Message,
+                });
+            }
+
+
         }
     }
 }
