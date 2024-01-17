@@ -12,13 +12,6 @@ namespace API_MessageTrigger.Infra.Data.Context
         }
         public DbSet<MessageTrigger> MessageTrigger { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var connectionString = Environment.GetEnvironmentVariable("MESSAGE_TRIGGER_CONNECTION");
-            var serverVersion = ServerVersion.AutoDetect(connectionString);
-            optionsBuilder.UseMySql(connectionString, serverVersion);
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

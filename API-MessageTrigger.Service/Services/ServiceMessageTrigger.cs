@@ -9,10 +9,10 @@ namespace API_MessageTrigger.Service.Services
 {
     public class ServiceMessageTrigger : IServiceMessageTrigger
     {
+        private readonly IBaseService<MessageTrigger> _baseUserService;
         private readonly IRequestEvolutionApi _requestEvolutionApi;
-        private IBaseService<MessageTrigger> _baseUserService;
 
-        public ServiceMessageTrigger(IRequestEvolutionApi requestEvolutionApi, IBaseService<MessageTrigger> baseService)
+        public ServiceMessageTrigger(IBaseService<MessageTrigger> baseService, IRequestEvolutionApi requestEvolutionApi)
         {
             _requestEvolutionApi = requestEvolutionApi;
             _baseUserService = baseService;
@@ -20,8 +20,9 @@ namespace API_MessageTrigger.Service.Services
 
         public string CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
-            var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution);
+            var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution).Result;
 
+            if (getBase64 is null) throw new ArgumentNullException("Error");
             //TODO: adicionar auto mapper
             //Salvar no banco
             var MessageTrigger = new MessageTrigger()
@@ -32,7 +33,7 @@ namespace API_MessageTrigger.Service.Services
             };
 
             var addInstance = _baseUserService.Add<MessageTriggerValidator>(MessageTrigger).Id;
-            return getBase64.Result;
+            return getBase64;
 
 
         }

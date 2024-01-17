@@ -13,6 +13,12 @@ namespace API_MessageTrigger.Controllers
             _serviceMessageTrigger = serviceMessage;
         }
 
+        [HttpGet]
+        public IActionResult HeathCheck()
+        {
+            return Ok("I´am alive");
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
