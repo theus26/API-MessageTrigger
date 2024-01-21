@@ -6,6 +6,11 @@ namespace API_MessageTrigger.Infra.Data.Context
 {
     public class MessageTriggerContext : DbContext
     {
+        public MessageTriggerContext(DbContextOptions<MessageTriggerContext> options) : base(options)
+        {
+
+        }
+
         public DbSet<MessageTrigger> MessageTrigger { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

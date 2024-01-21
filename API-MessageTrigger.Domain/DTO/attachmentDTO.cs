@@ -6,6 +6,6 @@ namespace API_MessageTrigger.Domain.DTO
     {
         public IFormFile File { get; set; }
         public IFormFile? MediaBase64 { get; set; }
-        public string Text { get; set; }
+        public string? Text { get; set; }
     }
 }

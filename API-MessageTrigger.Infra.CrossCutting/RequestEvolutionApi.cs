@@ -1,9 +1,7 @@
 ﻿using API_MessageTrigger.Domain.DTO;
 using API_MessageTrigger.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using System;
 using System.Text;
 
 namespace API_MessageTrigger.Infra.CrossCutting
@@ -18,28 +16,28 @@ namespace API_MessageTrigger.Infra.CrossCutting
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
         }
-        public async Task<string> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
+        public async Task<string?> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
-            string UrlEvolution = SetUrl(_instance);
+            string urlEvolution = SetUrl(_instance);
             var client = _httpClientFactory.CreateClient();
+
             try
             {
-                // Serializa o objeto para formato JSON
-                string requestBodyJson = JsonConvert.SerializeObject(createInstanceEvolution);
-                //Adiciona Header
-                client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
-                // Cria o conteúdo da requisição com o corpo (body) em formato JSON
-                var httpContent = new StringContent(requestBodyJson, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(UrlEvolution, httpContent);
+                string requestBodyJson = SerializeObjectToJson(createInstanceEvolution);
+                AddApiKeyHeader(client);
+
+                var httpContent = CreateJsonHttpContent(requestBodyJson);
+
+                var response = await client.PostAsync(urlEvolution, httpContent);
+
                 string content = await response.Content.ReadAsStringAsync();
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var deserealize = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content);
-                    return deserealize.qrcode.base64;
+                    return ExtractBase64FromResponse(content);
                 }
 
                 return null;
-
             }
             catch (HttpRequestException ex)
             {
@@ -51,32 +49,14 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             try
             {
-                string UrlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
-
-                //Iniciando a request
+                string urlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
                 var client = _httpClientFactory.CreateClient();
-                try
-                {
-                    // Serializa o objeto para formato JSON
-                    string requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
+                string requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
+                AddApiKeyHeader(client);
+                var httpContent = CreateJsonHttpContent(requestBodyJson);
+                var response = await client.PostAsync(urlEvolution, httpContent);
 
-                    //Adiciona Header
-                    client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
-                    // Cria o conteúdo da requisição com o corpo (body) em formato JSON
-                    var httpContent = new StringContent(requestBodyJson, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(UrlEvolution, httpContent);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-                catch
-                {
-                    throw;
-                }
+                return response.IsSuccessStatusCode;
             }
             catch (HttpRequestException ex)
             {
@@ -87,19 +67,40 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         private string SetUrl(string? mediaType)
         {
-            var Url = _configuration.GetSection("Urls").GetSection("UrlEvolutionApi").Value;
+            var apiUrl = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+
             if (mediaType == _instance)
             {
-                return $"{Url}/instance/create";
+                return $"{apiUrl}/instance/create";
             }
-            else if (mediaType is null)
+
+            if (mediaType is null)
             {
-                return $"{Url}/message/sendText/trigger";
+                return $"{apiUrl}/message/sendText/message";
             }
-            else
-            {
-                return $"{Url}/message/sendMedia/trigger";
-            }
+
+            return $"{apiUrl}/message/sendMedia/message";
+        }
+
+        private string SerializeObjectToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        private void AddApiKeyHeader(HttpClient client)
+        {
+            client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
+        }
+
+        private StringContent CreateJsonHttpContent(string json)
+        {
+            return new StringContent(json, Encoding.UTF8, "application/json");
+        }
+
+        private string ExtractBase64FromResponse(string content)
+        {
+            var deserialized = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content);
+            return deserialized.qrcode.base64;
         }
     }
 }

@@ -28,6 +28,10 @@ namespace API_MessageTrigger
             services.AddHttpClient();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddDbContext<MessageTriggerContext>(options =>
+            options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
+                     new MySqlServerVersion(new Version(8, 0, 23))));
+
 
 
         }
