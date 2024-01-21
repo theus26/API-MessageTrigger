@@ -21,13 +21,6 @@ namespace API_MessageTrigger
         {
             services.AddControllers();
 
-            IServiceCollection serviceCollection = services.AddDbContext<MessageTriggerContext>(options =>
-            {
-                services.AddDbContext<MessageTriggerContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            });
-
             services.AddTransient<IServiceMessageTrigger, ServiceMessageTrigger>();
             services.AddTransient<IBaseRepository<MessageTrigger>, BaseRepository<MessageTrigger>>();
             services.AddTransient<IBaseService<MessageTrigger>, BaseService<MessageTrigger>>();

@@ -20,11 +20,11 @@ namespace API_MessageTrigger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendMessageTrigger([FromForm] AttachmentDTO attachment)
+        public IActionResult SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
             try
             {
-                var processMensage =  _serviceMessageTrigger.ProcessMessage(attachment).Result;
+                var processMensage = _serviceMessageTrigger.ProcessMessage(attachment).Result;
                 return Ok(processMensage);
             }
             catch (Exception ex)
@@ -38,7 +38,7 @@ namespace API_MessageTrigger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateIntance(CreateInstanceEvolutionDTO CreateInstanceEvolution)
+        public IActionResult CreateIntance(CreateInstanceEvolutionDTO CreateInstanceEvolution)
         {
             try
             {
