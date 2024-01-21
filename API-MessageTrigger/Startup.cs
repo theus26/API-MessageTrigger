@@ -1,7 +1,6 @@
 ﻿using API_MessageTrigger.Domain.Entities;
 using API_MessageTrigger.Domain.Interfaces;
 using API_MessageTrigger.Infra.CrossCutting;
-using API_MessageTrigger.Infra.CrossCutting.AutoMapper;
 using API_MessageTrigger.Infra.Data.Context;
 using API_MessageTrigger.Infra.Data.Repository;
 using API_MessageTrigger.Service.Services;
