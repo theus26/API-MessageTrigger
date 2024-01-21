@@ -2,6 +2,7 @@
 using API_MessageTrigger.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIMessageTrigger.Infra.Data.Migrations
 {
     [DbContext(typeof(MessageTriggerContext))]
-    partial class MessageTriggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240121190530_Alterando-entities")]
+    partial class Alterandoentities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

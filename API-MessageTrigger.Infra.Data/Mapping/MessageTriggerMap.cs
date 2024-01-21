@@ -18,7 +18,7 @@ namespace API_MessageTrigger.Infra.Data.Mapping
                 .HasColumnName("PhoneNumber")
                 .HasColumnType("varchar(100)");
 
-            builder.Property(prop => prop.NameInstance)
+            builder.Property(prop => prop.InstanceName)
               .HasConversion(prop => prop.ToString(), prop => prop)
               .IsRequired()
               .HasColumnName("NameInstance")
@@ -29,6 +29,11 @@ namespace API_MessageTrigger.Infra.Data.Mapping
              .IsRequired()
              .HasColumnName("Token")
              .HasColumnType("varchar(100)");
+
+            builder.Property(prop => prop.Qrcode)
+             .IsRequired()
+             .HasColumnName("Qrcode")
+             .HasColumnType("tinyint(1)");
         }
     }
 }

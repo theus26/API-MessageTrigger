@@ -4,6 +4,7 @@
     {
         public string PhoneNumber { get; set; }
         public string Token { get; set; }
-        public string NameInstance { get; set; }
+        public bool Qrcode { get; set; }
+        public string InstanceName { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using API_MessageTrigger.Domain.Entities;
 using API_MessageTrigger.Domain.Interfaces;
 using API_MessageTrigger.Infra.CrossCutting;
+using API_MessageTrigger.Infra.CrossCutting.AutoMapper;
 using API_MessageTrigger.Infra.Data.Context;
 using API_MessageTrigger.Infra.Data.Repository;
 using API_MessageTrigger.Service.Services;
@@ -20,23 +21,17 @@ namespace API_MessageTrigger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            IServiceCollection serviceCollection = services.AddDbContext<MessageTriggerContext>(options =>
-            {
-                services.AddDbContext<MessageTriggerContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            });
-
             services.AddTransient<IServiceMessageTrigger, ServiceMessageTrigger>();
             services.AddTransient<IBaseRepository<MessageTrigger>, BaseRepository<MessageTrigger>>();
             services.AddTransient<IBaseService<MessageTrigger>, BaseService<MessageTrigger>>();
             services.AddTransient<IRequestEvolutionApi, RequestEvolutionApi>();
+          
             services.AddHttpClient();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-
-
+            services.AddDbContext<MessageTriggerContext>(options =>
+            options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
+                     new MySqlServerVersion(new Version(8, 0, 23))));
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

@@ -7,7 +7,6 @@
 
     public class Qrcode
     {
-
         public string base64 { get; set; }
         public int count { get; set; }
     }

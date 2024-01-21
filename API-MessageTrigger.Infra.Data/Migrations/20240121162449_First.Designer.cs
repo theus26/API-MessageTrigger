@@ -2,6 +2,7 @@
 using API_MessageTrigger.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIMessageTrigger.Infra.Data.Migrations
 {
     [DbContext(typeof(MessageTriggerContext))]
-    partial class MessageTriggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240121162449_First")]
+    partial class First
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace APIMessageTrigger.Infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("InstanceName")
+                    b.Property<string>("NameInstance")
                         .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("NameInstance");
@@ -34,14 +37,14 @@ namespace APIMessageTrigger.Infra.Data.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("PhoneNumber");
 
-                    b.Property<bool>("Qrcode")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("Qrcode");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("Token");
+
+                    b.Property<string>("teste")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
