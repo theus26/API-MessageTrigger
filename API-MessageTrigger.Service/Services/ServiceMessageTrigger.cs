@@ -2,6 +2,7 @@
 using API_MessageTrigger.Domain.Entities;
 using API_MessageTrigger.Domain.Interfaces;
 using API_MessageTrigger.Service.Validators;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
@@ -13,22 +14,19 @@ namespace API_MessageTrigger.Service.Services
         private readonly IBaseService<MessageTrigger> _baseUserService = baseService;
         private readonly IRequestEvolutionApi _requestEvolutionApi = requestEvolutionApi;
 
+
         #region Criar instancia da evolution
         public string CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
-            var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution).Result;
-
-            if (getBase64 is null) throw new ArgumentNullException("Error");
-
-            //TODO: adicionar auto mapper
-            //Salvar no banco
-            var MessageTrigger = new MessageTrigger()
+            var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution).Result ?? throw new ArgumentNullException("Error");
+            var CreateMessageTrigger = new MessageTrigger()
             {
-                NameInstance = createInstanceEvolution.InstanceName,
-                PhoneNumber = createInstanceEvolution.Number,
+                InstanceName = createInstanceEvolution.InstanceName,
+                PhoneNumber = createInstanceEvolution.PhoneNumber,
                 Token = createInstanceEvolution.Token,
             };
-            _ = _baseUserService.Add<MessageTriggerValidator>(MessageTrigger).Id;
+
+            _ = _baseUserService.Add<MessageTriggerValidator>(CreateMessageTrigger).Id;
             return getBase64;
         }
         #endregion

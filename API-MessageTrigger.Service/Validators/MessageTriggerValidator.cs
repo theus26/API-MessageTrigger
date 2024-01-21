@@ -7,17 +7,17 @@ namespace API_MessageTrigger.Service.Validators
     {
         public MessageTriggerValidator()
         {
-            RuleFor(c => c.NameInstance)
-                .NotEmpty().WithMessage("Please enter the name.")
-                .NotNull().WithMessage("Please enter the name.");
+            RuleFor(c => c.InstanceName)
+                .NotEmpty().WithMessage("Please enter the InstanceName.")
+                .NotNull().WithMessage("Please enter the InstanceName.");
 
             RuleFor(c => c.Token)
-               .NotEmpty().WithMessage("Please enter the name.")
-               .NotNull().WithMessage("Please enter the name.");
+               .NotEmpty().WithMessage("Please enter the Token.")
+               .NotNull().WithMessage("Please enter the Token.");
 
             RuleFor(c => c.PhoneNumber)
-              .NotEmpty().WithMessage("Please enter the name.")
-              .NotNull().WithMessage("Please enter the name.");
+              .NotEmpty().WithMessage("Please enter the PhoneNumber.")
+              .NotNull().WithMessage("Please enter the PhoneNumber.");
         }
     }
 }

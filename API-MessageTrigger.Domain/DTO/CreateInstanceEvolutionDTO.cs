@@ -11,7 +11,7 @@ namespace API_MessageTrigger.Domain.DTO
         [JsonProperty("qrcode")]
         public bool Qrcode { get; set; }
         [JsonProperty("number")]
-        public string Number { get; set; }
+        public string PhoneNumber { get; set; }
     }
 
 }
