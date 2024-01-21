@@ -21,7 +21,6 @@ namespace API_MessageTrigger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddAutoMapper(typeof(Mappers));
             services.AddTransient<IServiceMessageTrigger, ServiceMessageTrigger>();
             services.AddTransient<IBaseRepository<MessageTrigger>, BaseRepository<MessageTrigger>>();
             services.AddTransient<IBaseService<MessageTrigger>, BaseService<MessageTrigger>>();
