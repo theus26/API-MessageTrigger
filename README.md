@@ -49,7 +49,7 @@ dotnet run
 
 5. Acesse a API em http://localhost:porta, onde "porta" é a porta configurada para a sua API.
 
-*Observação: Trocar a Url da Evolution API no AppSettings, caso não for usar localmente, trocar por sua urls de teste*
+*Observação: Certifique-se de estar rodando a evolution para realizar os testes e trocar a Url da Evolution API no AppSettings, caso não for usar localmente, trocar por sua urls de teste*
 
 ```
  "Urls": {
