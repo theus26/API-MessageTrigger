@@ -13,5 +13,6 @@ namespace API_MessageTrigger.Domain.Interfaces
         IList<TEntity> Select();
 
         TEntity Select(int id);
+        TEntity GetByNumber(string numberPhone);
     }
 }
