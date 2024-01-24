@@ -19,14 +19,14 @@ namespace API_MessageTrigger.Service.Services
         public string CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
             var getBase64 = _requestEvolutionApi.CreateInstance(createInstanceEvolution).Result ?? throw new ArgumentNullException("Error");
-            var CreateMessageTrigger = new MessageTrigger()
+            var createMessageTrigger = new MessageTrigger()
             {
                 InstanceName = createInstanceEvolution.InstanceName,
                 PhoneNumber = createInstanceEvolution.PhoneNumber,
                 Token = createInstanceEvolution.Token,
             };
 
-            _ = _baseUserService.Add<MessageTriggerValidator>(CreateMessageTrigger).Id;
+            _ = _baseUserService.Add<MessageTriggerValidator>(createMessageTrigger).Id;
             return getBase64;
         }
         #endregion

@@ -51,7 +51,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
             {
                 string urlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
                 var client = _httpClientFactory.CreateClient();
-                string requestBodyJson = JsonConvert.SerializeObject(sendMessageEvolution);
+                string requestBodyJson = SerializeObjectToJson(sendMessageEvolution);
                 AddApiKeyHeader(client);
                 var httpContent = CreateJsonHttpContent(requestBodyJson);
                 var response = await client.PostAsync(urlEvolution, httpContent);
@@ -67,40 +67,40 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         private string SetUrl(string? mediaType)
         {
-            var apiUrl = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
 
             if (mediaType == _instance)
             {
-                return $"{apiUrl}/instance/create";
+                return $"{url}/instance/create";
             }
 
             if (mediaType is null)
             {
-                return $"{apiUrl}/message/sendText/message";
+                return $"{url}/message/sendText/message";
             }
 
-            return $"{apiUrl}/message/sendMedia/message";
+            return $"{url}/message/sendMedia/message";
         }
 
-        private string SerializeObjectToJson(object obj)
+        private static string SerializeObjectToJson(object obj)
         {
             return JsonConvert.SerializeObject(obj);
         }
 
-        private void AddApiKeyHeader(HttpClient client)
+        private static void AddApiKeyHeader(HttpClient client)
         {
             client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
         }
 
-        private StringContent CreateJsonHttpContent(string json)
+        private static StringContent CreateJsonHttpContent(string json)
         {
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        private string ExtractBase64FromResponse(string content)
+        private static string ExtractBase64FromResponse(string content)
         {
-            var deserialized = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content);
-            return deserialized.qrcode.base64;
+            string deserialized = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content).qrcode.base64;
+            return deserialized;
         }
     }
 }

@@ -4,14 +4,9 @@ using API_MessageTrigger.Infra.Data.Context;
 
 namespace API_MessageTrigger.Infra.Data.Repository
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
+    public class BaseRepository<TEntity>(MessageTriggerContext mySqlContext) : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        protected readonly MessageTriggerContext _mySqlContext;
-
-        public BaseRepository(MessageTriggerContext mySqlContext)
-        {
-            _mySqlContext = mySqlContext;
-        }
+        protected readonly MessageTriggerContext _mySqlContext = mySqlContext;
 
         public void Insert(TEntity obj)
         {

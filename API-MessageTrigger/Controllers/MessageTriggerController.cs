@@ -20,6 +20,8 @@ namespace API_MessageTrigger.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ResultNumbersDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseDTO), StatusCodes.Status400BadRequest)]
         public IActionResult SendMessageTrigger([FromForm] AttachmentDTO attachment)
         {
             try
@@ -38,11 +40,13 @@ namespace API_MessageTrigger.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateIntance(CreateInstanceEvolutionDTO CreateInstanceEvolution)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseDTO), StatusCodes.Status400BadRequest)]
+        public IActionResult CreateIntance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
             try
             {
-                var createInstance = _serviceMessageTrigger.CreateInstance(CreateInstanceEvolution);
+                var createInstance = _serviceMessageTrigger.CreateInstance(createInstanceEvolution);
                 return Ok(createInstance);
             }
             catch (Exception ex)
