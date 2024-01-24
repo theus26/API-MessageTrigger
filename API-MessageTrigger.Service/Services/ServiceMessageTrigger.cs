@@ -35,17 +35,19 @@ namespace API_MessageTrigger.Service.Services
         {
             try
             {
+                string intanceName = _baseUserService.GetByNumber(attachment.PhoneNumber).InstanceName;
+                if (string.IsNullOrEmpty(intanceName)) throw new Exception("Intancia não existe para esse numero");
                 ResultNumbersDTO resultNumbersDTO = new ResultNumbersDTO();
                 var extractData = await ExtractDataCsv(attachment);
 
                 if (attachment.MediaBase64 is not null)
                 {
                     var messageBase64 = ConvertForBase64(attachment.MediaBase64);
-                    await ProcessMediaMessages(extractData, attachment.Text, messageBase64, resultNumbersDTO);
+                    await ProcessMediaMessages(extractData, attachment.Text, messageBase64, resultNumbersDTO, intanceName);
                 }
                 else
                 {
-                    await ProcessTextMessages(extractData, attachment.Text, resultNumbersDTO);
+                    await ProcessTextMessages(extractData, attachment.Text, resultNumbersDTO, intanceName);
                 }
 
                 return resultNumbersDTO;
@@ -57,8 +59,9 @@ namespace API_MessageTrigger.Service.Services
 
         }
 
-        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string text, string messageBase64, ResultNumbersDTO resultNumbersDTO)
+        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string text, string messageBase64, ResultNumbersDTO resultNumbersDTO, string instanceName)
         {
+           
            
             var tasks = numbers.Select(async numero =>
             {
@@ -69,7 +72,7 @@ namespace API_MessageTrigger.Service.Services
                     MediaMessage = new MediaMessage { MediaType = "image", Caption = text, Base64 = messageBase64 }
                 };
 
-                var sendMensage = await _requestEvolutionApi.SendMessageWhatsapp(bodyRequest).ConfigureAwait(false);
+                var sendMensage = await _requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);
 
                 if (sendMensage)
                 {
@@ -84,7 +87,7 @@ namespace API_MessageTrigger.Service.Services
             await Task.WhenAll(tasks);
         }
 
-        private async Task ProcessTextMessages(IEnumerable<string> numbers, string text, ResultNumbersDTO? resultNumbersDTO)
+        private async Task ProcessTextMessages(IEnumerable<string> numbers, string text, ResultNumbersDTO? resultNumbersDTO, string instanceName)
         {
             var tasks = numbers.Select(async numero =>
             {
@@ -95,7 +98,7 @@ namespace API_MessageTrigger.Service.Services
                     TextMessage = new Textmessage { Text = text }
                 };
 
-                var sendMensage = await _requestEvolutionApi.SendMessageWhatsapp(bodyRequest).ConfigureAwait(false);
+                var sendMensage = await _requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);
 
                 if (sendMensage)
                 {

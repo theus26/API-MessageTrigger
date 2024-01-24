@@ -18,7 +18,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
         }
         public async Task<string?> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
-            string urlEvolution = SetUrl(_instance);
+            string urlEvolution = SetUrl(_instance, null);
             var client = _httpClientFactory.CreateClient();
 
             try
@@ -45,11 +45,11 @@ namespace API_MessageTrigger.Infra.CrossCutting
             }
         }
 
-        public async Task<bool> SendMessageWhatsapp(SendMessageEvolutionDTO sendMessageEvolution)
+        public async Task<bool> SendMessageWhatsapp(SendMessageEvolutionDTO sendMessageEvolution, string instanceName)
         {
             try
             {
-                string urlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType);
+                string urlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType, instanceName);
                 var client = _httpClientFactory.CreateClient();
                 string requestBodyJson = SerializeObjectToJson(sendMessageEvolution);
                 AddApiKeyHeader(client);
@@ -65,7 +65,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         }
 
-        private string SetUrl(string? mediaType)
+        private string SetUrl(string? mediaType, string? instanceName)
         {
             var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
 
@@ -76,10 +76,10 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
             if (mediaType is null)
             {
-                return $"{url}/message/sendText/message";
+                return $"{url}/message/sendText/{instanceName}";
             }
 
-            return $"{url}/message/sendMedia/message";
+            return $"{url}/message/sendMedia/{instanceName}";
         }
 
         private static string SerializeObjectToJson(object obj)

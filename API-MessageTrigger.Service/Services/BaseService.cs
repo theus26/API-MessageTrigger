@@ -23,24 +23,8 @@ namespace API_MessageTrigger.Service.Services
             validator.ValidateAndThrow(obj);
         }
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public TEntity GetByNumber(string phoneNumber) => _baseRepository.GetByNumber(phoneNumber);
 
-        public IList<TEntity> Get()
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEntity GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEntity Update<TValidator>(TEntity obj) where TValidator : FluentValidation.AbstractValidator<TEntity>
-        {
-            throw new NotImplementedException();
-        }
+    
     }
 }
