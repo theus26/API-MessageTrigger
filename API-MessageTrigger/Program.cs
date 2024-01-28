@@ -1,4 +1,3 @@
-
 using API_MessageTrigger;
 
 public class Program

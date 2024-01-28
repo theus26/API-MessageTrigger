@@ -2,7 +2,7 @@
 {
     public class ResultNumbersDTO
     {
-        public List<string>? NumberSucess { get; set; } = [];
-        public List<string>? NumberError { get; set; } = [];
+        public ICollection<string>? NumberSucess { get; set; } = [];
+        public ICollection<string>? NumberError { get; set; } = [];
     }
 }

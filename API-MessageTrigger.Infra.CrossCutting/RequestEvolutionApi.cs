@@ -99,8 +99,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         private static string ExtractBase64FromResponse(string content)
         {
-            string deserialized = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content).qrcode.base64;
-            return deserialized;
+            return JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content).Qrcode.Base64;
         }
     }
 }
