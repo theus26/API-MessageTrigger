@@ -6,12 +6,10 @@ namespace API_MessageTrigger.Service.Services
 {
     public class BaseService<TEntity>(IBaseRepository<TEntity> baseRepository) : IBaseService<TEntity> where TEntity : BaseEntity
     {
-        private readonly IBaseRepository<TEntity> _baseRepository = baseRepository;
-
         public TEntity Add<TValidator>(TEntity obj) where TValidator : AbstractValidator<TEntity>
         {
-            BaseService<TEntity>.Validate(obj, Activator.CreateInstance<TValidator>());
-            _baseRepository.Insert(obj);
+            Validate(obj, Activator.CreateInstance<TValidator>());
+            baseRepository.Insert(obj);
             return obj;
         }
 
@@ -23,7 +21,7 @@ namespace API_MessageTrigger.Service.Services
             validator.ValidateAndThrow(obj);
         }
 
-        public TEntity GetByNumber(string phoneNumber) => _baseRepository.GetByNumber(phoneNumber);
+        public TEntity GetByNumber(string phoneNumber) => baseRepository.GetByNumber(phoneNumber);
 
     
     }

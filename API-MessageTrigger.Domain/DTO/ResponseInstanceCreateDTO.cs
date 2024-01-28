@@ -2,13 +2,13 @@
 {
     public class ResponseInstanceCreateDTO
     {
-        public Qrcode qrcode { get; set; }
+        public Qrcode Qrcode { get; set; }
     }
 
     public class Qrcode
     {
-        public string base64 { get; set; }
-        public int count { get; set; }
+        public string Base64 { get; set; }
+        public int Count { get; set; }
     }
 
 }

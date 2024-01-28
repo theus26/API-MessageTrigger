@@ -5,14 +5,8 @@ namespace API_MessageTrigger.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class MessageTriggerController : ControllerBase
+    public class MessageTriggerController(IServiceMessageTrigger _serviceMessage) : ControllerBase
     {
-        private readonly IServiceMessageTrigger _serviceMessageTrigger;
-        public MessageTriggerController(IServiceMessageTrigger serviceMessage)
-        {
-            _serviceMessageTrigger = serviceMessage;
-        }
-
         [HttpGet]
         public IActionResult HeathCheck()
         {
@@ -26,7 +20,7 @@ namespace API_MessageTrigger.Controllers
         {
             try
             {
-                var processMensage = _serviceMessageTrigger.ProcessMessage(attachment).Result;
+                var processMensage = _serviceMessage.ProcessMessage(attachment).Result;
                 return Ok(processMensage);
             }
             catch (Exception ex)
@@ -46,7 +40,7 @@ namespace API_MessageTrigger.Controllers
         {
             try
             {
-                var createInstance = _serviceMessageTrigger.CreateInstance(createInstanceEvolution);
+                var createInstance = _serviceMessage.CreateInstance(createInstanceEvolution);
                 return Ok(createInstance);
             }
             catch (Exception ex)
