@@ -21,7 +21,7 @@ namespace API_MessageTrigger.Service.Services
             validator.ValidateAndThrow(obj);
         }
 
-        public TEntity GetByNumber(string phoneNumber) => baseRepository.GetByNumber(phoneNumber);
+        public TEntity GetInstanceNameByPhoneNumber(string phoneNumber) => baseRepository.GetInstanceEvolutionByGetPhoneNumber(phoneNumber);
 
     
     }

@@ -25,29 +25,29 @@ namespace API_MessageTrigger.Service.Services
         }
         #endregion
 
-        public async Task<ResultNumbersDTO> ProcessMessage(AttachmentDTO attachment)
+        public async Task<ResultNumbersDTO> ProcessMessage(AttachmentDTO attachmentDto)
         {
-            string intanceName = baseService.GetByNumber(attachment.PhoneNumber).InstanceName;
+            string intanceName = baseService.GetInstanceNameByPhoneNumber(attachmentDto.PhoneNumber).InstanceName;
 
             if (string.IsNullOrEmpty(intanceName)) throw new Exception("Intancia não existe para esse numero");
 
             ResultNumbersDTO resultNumbersDTO = new ResultNumbersDTO();
-            var extractData = await ExtractDataCsv(attachment);
+            var numbersPhones = await ExtractNumberPhoneFromCsv(attachmentDto);
 
-            if (attachment.MediaBase64 is not null)
+            if (attachmentDto.MediaBase64 is not null)
             {
-                var messageBase64 = ConvertForBase64(attachment.MediaBase64);
-                await ProcessMediaMessages(extractData, attachment.Text, messageBase64, resultNumbersDTO, intanceName);
+                var base64 = ConvertMediaForBase64(attachmentDto.MediaBase64);
+                await ProcessMediaMessages(numbersPhones, attachmentDto.Text, base64, resultNumbersDTO, intanceName);
             }
             else
             {
-                await ProcessTextMessages(extractData, attachment.Text, resultNumbersDTO, intanceName);
+                await ProcessTextMessages(numbersPhones, attachmentDto.Text, resultNumbersDTO, intanceName);
             }
 
             return resultNumbersDTO;
         }
 
-        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string text, string messageBase64, ResultNumbersDTO resultNumbersDTO, string instanceName)
+        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string text, string base64, ResultNumbersDTO resultNumbersDTO, string instanceName)
         {
            
            
@@ -57,7 +57,7 @@ namespace API_MessageTrigger.Service.Services
                 {
                     Number = numero,
                     Options = new Options { Delay = 1200, Presence = "composing" },
-                    MediaMessage = new MediaMessage { MediaType = "image", Caption = text, Base64 = messageBase64 }
+                    MediaMessage = new MediaMessage { MediaType = "image", Caption = text, Base64 = base64 }
                 };
 
                 var sendMensage = await requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace API_MessageTrigger.Service.Services
         }
 
         #region Converter para base64
-        private static string ConvertForBase64(IFormFile file)
+        private static string ConvertMediaForBase64(IFormFile file)
         {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
@@ -113,7 +113,7 @@ namespace API_MessageTrigger.Service.Services
         #endregion
 
         #region Extraindo dado do Excel
-        private static async Task<ICollection<string>> ExtractDataCsv(AttachmentDTO attachment)
+        private static async Task<ICollection<string>> ExtractNumberPhoneFromCsv(AttachmentDTO attachment)
         {
             List<string> valoresEncontrados = new List<string>();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

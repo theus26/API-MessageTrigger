@@ -6,7 +6,7 @@ namespace API_MessageTrigger.Domain.Interfaces
     public interface IBaseService<TEntity> where TEntity : BaseEntity
     {
         TEntity Add<TValidator>(TEntity obj) where TValidator : AbstractValidator<TEntity>;
-        TEntity GetByNumber(string phoneNumber);
+        TEntity GetInstanceNameByPhoneNumber(string phoneNumber);
 
      
     }
