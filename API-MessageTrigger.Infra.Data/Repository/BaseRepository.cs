@@ -32,7 +32,7 @@ namespace API_MessageTrigger.Infra.Data.Repository
         public TEntity Select(int id) =>
             _mySqlContext.Set<TEntity>().Find(id);
 
-        public TEntity GetByNumber(string numberPhone)
+        public TEntity GetInstanceEvolutionByGetPhoneNumber(string numberPhone)
         {
             return _mySqlContext.Set<TEntity>().FirstOrDefault(x => x.PhoneNumber == numberPhone);
         }
