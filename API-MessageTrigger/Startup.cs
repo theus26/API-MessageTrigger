@@ -11,7 +11,7 @@ namespace API_MessageTrigger
     public class Startup(IConfiguration configuration)
     {
         public IConfiguration Configuration { get; } = configuration;
-
+        private readonly string OpenCors = "_openCors";
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -22,6 +22,16 @@ namespace API_MessageTrigger
           
             services.AddHttpClient();
             services.AddEndpointsApiExplorer();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: OpenCors,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.WithMethods("PUT", "DELETE", "GET", "POST");
+                        builder.AllowAnyHeader();
+                    });
+            });
             services.AddSwaggerGen();
             services.AddDbContext<MessageTriggerContext>(options =>
             options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
@@ -39,7 +49,7 @@ namespace API_MessageTrigger
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(OpenCors);
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

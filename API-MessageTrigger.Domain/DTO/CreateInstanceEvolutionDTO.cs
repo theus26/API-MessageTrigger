@@ -6,12 +6,6 @@ namespace API_MessageTrigger.Domain.DTO
     {
         [JsonProperty("instanceName")]
         public string InstanceName { get; set; }
-        [JsonProperty("token")]
-        public string Token { get; set; }
-        [JsonProperty("qrcode")]
-        public bool Qrcode { get; set; }
-        [JsonProperty("number")]
-        public string PhoneNumber { get; set; }
     }
 
 }

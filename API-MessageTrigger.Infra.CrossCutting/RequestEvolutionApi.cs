@@ -16,28 +16,19 @@ namespace API_MessageTrigger.Infra.CrossCutting
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
         }
-        public async Task<string?> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
+        public async Task<bool> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
-            string urlEvolution = SetUrl(_instance, null);
+            var urlEvolution = SetUrl(_instance);
             var client = _httpClientFactory.CreateClient();
 
             try
             {
-                string requestBodyJson = SerializeObjectToJson(createInstanceEvolution);
+                var requestBodyJson = SerializeObjectToJson(createInstanceEvolution);
                 AddApiKeyHeader(client);
-
                 var httpContent = CreateJsonHttpContent(requestBodyJson);
-
                 var response = await client.PostAsync(urlEvolution, httpContent);
+                return response.IsSuccessStatusCode;
 
-                string content = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return ExtractBase64FromResponse(content);
-                }
-
-                return null;
             }
             catch (HttpRequestException ex)
             {
@@ -65,7 +56,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         }
 
-        private string SetUrl(string? mediaType, string? instanceName)
+        private string SetUrl(string? mediaType, string? instanceName = null)
         {
             var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
 
@@ -74,12 +65,92 @@ namespace API_MessageTrigger.Infra.CrossCutting
                 return $"{url}/instance/create";
             }
 
-            if (mediaType is null)
-            {
-                return $"{url}/message/sendText/{instanceName}";
-            }
+            return mediaType is null ? $"{url}/message/sendText/{instanceName}" : $"{url}/message/sendMedia/{instanceName}";
+        }
 
-            return $"{url}/message/sendMedia/{instanceName}";
+        public async Task<ConnectInstanceDTO?> ConnectInstance(string instanceName)
+        {
+            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var client = _httpClientFactory.CreateClient();
+
+            try
+            {
+                AddApiKeyHeader(client);
+                var response = await client.GetAsync($"{url}/instance/connect/{instanceName}");
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Não foi possivel realizar a request");
+
+                var content = await response.Content.ReadAsStringAsync();
+                var base64 = JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content)?.Base64;
+                return new ConnectInstanceDTO()
+                {
+                    base64 = base64 ?? string.Empty
+                };
+
+
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"Ocorreu um erro na requisição: {ex.Message}");
+            }
+        }
+
+        public async Task<List<InstancesDTO>?> FetchInstances()
+        {
+            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var client = _httpClientFactory.CreateClient();
+
+            try
+            {
+                AddApiKeyHeader(client);
+                var response = await client.GetAsync($"{url}/instance/fetchInstances");
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Não foi possivel realizar a request");
+
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<InstancesDTO>>(content);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"Ocorreu um erro na requisição: {ex.Message}");
+            }
+        }
+
+        public async void LogoutInstances(string instanceName)
+        {
+            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var client = _httpClientFactory.CreateClient();
+
+            try
+            {
+                AddApiKeyHeader(client);
+                var response = await client.DeleteAsync($"{url}/instance/logout/{instanceName}");
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Não foi possivel realizar a request");
+
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"Ocorreu um erro na requisição: {ex.Message}");
+            }
+        }
+
+        public async void DeleteInstances(string instanceName)
+        {
+            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var client = _httpClientFactory.CreateClient();
+
+            try
+            {
+                AddApiKeyHeader(client);
+                var response = await client.DeleteAsync($"{url}/instance/delete/{instanceName}");
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Não foi possivel realizar a request");
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"Ocorreu um erro na requisição: {ex.Message}");
+            }
         }
 
         private static string SerializeObjectToJson(object obj)
@@ -95,11 +166,6 @@ namespace API_MessageTrigger.Infra.CrossCutting
         private static StringContent CreateJsonHttpContent(string json)
         {
             return new StringContent(json, Encoding.UTF8, "application/json");
-        }
-
-        private static string ExtractBase64FromResponse(string content)
-        {
-            return JsonConvert.DeserializeObject<ResponseInstanceCreateDTO>(content).Qrcode.Base64;
         }
     }
 }

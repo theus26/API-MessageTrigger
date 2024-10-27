@@ -4,8 +4,11 @@ namespace API_MessageTrigger.Domain.Interfaces
 {
     public interface IServiceMessageTrigger
     {
-        Task<ResultNumbersDTO> ProcessMessage(AttachmentDTO attachmentDto);
-        string CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution);
-
+        Task<ResultNumbersDTO> ProcessMessage(TriggerDTO triggerDto);
+        bool CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution);
+        ConnectInstanceDTO? ConnectInstance(string instanceName);
+        List<InstancesDTO>? FetchInstance();
+        void LogoutInstances(string instanceName);
+        void DeleteInstances(string instanceName);
     }
 }
