@@ -44,50 +44,51 @@ namespace API_MessageTrigger.Service.Services
         public async Task<ResultNumbersDTO> ProcessMessage(TriggerDTO triggerDto)
         {
             ResultNumbersDTO resultNumbersDTO = new ResultNumbersDTO();
-            var numbersPhones = triggerDto.Numbers;
-
-            if (triggerDto.MediaBase64 is not null)
+            var tasks = triggerDto.Messages.Select(async message =>
             {
-                //TODO: Implementar lógica futura para envio de medias
-            }
-            else
-            {
-                var messages = triggerDto.Messages.Select(msg => msg.Message).FirstOrDefault();
-                await ProcessTextMessages(numbersPhones, messages, resultNumbersDTO, triggerDto.InstanceName);
-            }
+                var numbersPhones = triggerDto.Numbers;
+                if (message.Type != "text")
+                {
+                    await ProcessMediaMessages(numbersPhones, message.Message, message.Media, resultNumbersDTO, triggerDto.InstanceName, message?.Type);
+                }
+                else
+                {
+                    await ProcessTextMessages(numbersPhones, message.Message, resultNumbersDTO, triggerDto.InstanceName);
+                }
 
+            });
+
+            await Task.WhenAll(tasks);
             return resultNumbersDTO;
         }
 
-        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string text, string base64, ResultNumbersDTO resultNumbersDTO, string instanceName)
+        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string? text, string? base64, ResultNumbersDTO resultNumbersDTO, string? instanceName, string? type)
         {
-           
-           
             var tasks = numbers.Select(async numero =>
             {
                 var bodyRequest = new SendMessageEvolutionDTO
                 {
                     Number = numero,
                     Options = new Options { Delay = 1200, Presence = "composing" },
-                    MediaMessage = new MediaMessage { MediaType = "image", Caption = text, Base64 = base64 }
+                    MediaMessage = new MediaMessage { MediaType = type, Caption = text ?? "", Base64 = base64 }
                 };
 
                 var sendMensage = await requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);
 
                 if (sendMensage)
                 {
-                    resultNumbersDTO.NumberSucess.Add(bodyRequest.Number);
+                    resultNumbersDTO?.NumberSucess?.Add(bodyRequest.Number);
                 }
                 else
                 {
-                    resultNumbersDTO.NumberError.Add(bodyRequest.Number);
+                    resultNumbersDTO?.NumberError?.Add(bodyRequest.Number);
                 }
             });
 
             await Task.WhenAll(tasks);
         }
 
-        private async Task ProcessTextMessages(IEnumerable<string> numbers, string text, ResultNumbersDTO? resultNumbersDTO, string instanceName)
+        private async Task ProcessTextMessages(IEnumerable<string> numbers, string? text, ResultNumbersDTO? resultNumbersDTO, string? instanceName)
         {
             var tasks = numbers.Select(async numero =>
             {
@@ -102,11 +103,11 @@ namespace API_MessageTrigger.Service.Services
 
                 if (sendMensage)
                 {
-                    resultNumbersDTO.NumberSucess.Add(bodyRequest.Number);
+                    resultNumbersDTO?.NumberSucess?.Add(bodyRequest.Number);
                 }
                 else
                 {
-                    resultNumbersDTO.NumberError.Add(bodyRequest.Number);
+                    resultNumbersDTO?.NumberError?.Add(bodyRequest.Number);
                 }
             });
 
