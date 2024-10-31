@@ -7,7 +7,7 @@ namespace API_MessageTrigger.Domain.Interfaces
         Task<ResultNumbersDTO> ProcessMessage(TriggerDTO triggerDto);
         bool CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution);
         ConnectInstanceDTO? ConnectInstance(string instanceName);
-        List<InstancesDTO>? FetchInstance();
+        List<InstancesDTO>? FetchInstance(string accountId);
         void LogoutInstances(string instanceName);
         void DeleteInstances(string instanceName);
     }

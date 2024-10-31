@@ -22,9 +22,11 @@ namespace API_MessageTrigger.Service.Services
 
         #endregion
 
-        public List<InstancesDTO>? FetchInstance()
+        public List<InstancesDTO>? FetchInstance(string accountId)
         {
-            return requestEvolutionApi.FetchInstances().Result;
+            var instances = requestEvolutionApi.FetchInstances().Result;
+            var query = "account_" + accountId;
+            return instances?.FindAll(x => x.Instance.InstanceName.Contains(query));
         }
 
         public void LogoutInstances(string instanceName)

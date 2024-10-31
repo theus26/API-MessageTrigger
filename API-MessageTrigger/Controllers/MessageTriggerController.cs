@@ -72,11 +72,11 @@ namespace API_MessageTrigger.Controllers
         }
 
         [HttpGet]
-        public IActionResult FetchInstance()
+        public IActionResult FetchInstance(string accountId)
         {
             try
             {
-                var instances = _serviceMessage.FetchInstance();
+                var instances = _serviceMessage.FetchInstance(accountId);
                 return Ok(instances);
             }
             catch (Exception ex)
