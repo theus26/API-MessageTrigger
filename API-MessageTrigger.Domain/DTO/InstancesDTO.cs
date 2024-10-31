@@ -1,21 +1,20 @@
-﻿namespace API_MessageTrigger.Domain.DTO
+﻿using Newtonsoft.Json;
+
+namespace API_MessageTrigger.Domain.DTO
 {
     public class InstancesDTO
     {
-        public Instance Instance { get; set; }
-    }
-
-    public class Instance
-    {
+        [JsonProperty("name")]
         public string InstanceName { get; set; }
+        [JsonProperty("id")]
         public string InstanceId { get; set; }
+        [JsonProperty("connectionStatus")]
         public string Status { get; set; }
-        public string ServerUrl { get; set; }
-        public string ApiKey { get; set; }
+        [JsonProperty("ownerJid")]
         public string Owner { get; set; }
+        [JsonProperty("profileName")]
         public string ProfileName { get; set; }
-        public string ProfileStatus { get; set; }
+        [JsonProperty("profilePicUrl")]
+        public string ProfilePictureUrl { get; set; }
     }
-
-
 }

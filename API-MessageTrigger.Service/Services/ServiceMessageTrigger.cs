@@ -26,7 +26,7 @@ namespace API_MessageTrigger.Service.Services
         {
             var instances = requestEvolutionApi.FetchInstances().Result;
             var query = "account_" + accountId;
-            return instances?.FindAll(x => x.Instance.InstanceName.Contains(query));
+            return instances?.FindAll(x => x.InstanceName.Contains(query));
         }
 
         public void LogoutInstances(string instanceName)
@@ -49,7 +49,7 @@ namespace API_MessageTrigger.Service.Services
                 var numbersPhones = triggerDto.Numbers;
                 if (message.Type != "text")
                 {
-                    await ProcessMediaMessages(numbersPhones, message.Message, message.Media, resultNumbersDTO, triggerDto.InstanceName, message?.Type);
+                    await ProcessMediaMessages(numbersPhones, resultNumbersDTO, message, triggerDto.InstanceName);
                 }
                 else
                 {
@@ -62,15 +62,18 @@ namespace API_MessageTrigger.Service.Services
             return resultNumbersDTO;
         }
 
-        private async Task ProcessMediaMessages(IEnumerable<string> numbers, string? text, string? base64, ResultNumbersDTO resultNumbersDTO, string? instanceName, string? type)
+        private async Task ProcessMediaMessages(IEnumerable<string> numbers, ResultNumbersDTO resultNumbersDTO, Messages messages, string? instanceName)
         {
             var tasks = numbers.Select(async numero =>
             {
                 var bodyRequest = new SendMessageEvolutionDTO
                 {
                     Number = numero,
-                    Options = new Options { Delay = 1200, Presence = "composing" },
-                    MediaMessage = new MediaMessage { MediaType = type, Caption = text ?? "", Base64 = base64 }
+                    mediatype = messages.MediaType,
+                    mimetype = messages.Mimetype,
+                    caption = messages.Caption ?? "",
+                    media = messages.Media,
+                    fileName = messages.FileName,
                 };
 
                 var sendMensage = await requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);
@@ -95,8 +98,7 @@ namespace API_MessageTrigger.Service.Services
                 var bodyRequest = new SendMessageEvolutionDTO
                 {
                     Number = numero,
-                    Options = new Options { Delay = 1200, Presence = "composing", LinkPreview = false },
-                    TextMessage = new Textmessage { Text = text }
+                    Text = text
                 };
 
                 var sendMensage = await requestEvolutionApi.SendMessageWhatsapp(bodyRequest, instanceName).ConfigureAwait(false);

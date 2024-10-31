@@ -6,34 +6,17 @@ namespace API_MessageTrigger.Domain.DTO
     {
         [JsonProperty("number")]
         public string Number { get; set; }
-        public Options Options { get; set; }
-        [JsonProperty("mediaMessage")]
-        public MediaMessage? MediaMessage { get; set; }
-        [JsonProperty("textMessage")]
-        public Textmessage TextMessage { get; set; }
-    }
-
-    public class Options
-    {
-        public int Delay { get; set; }
-        public string Presence { get; set; }
-        public bool LinkPreview { get; set; }
-    }
-
-    public class Textmessage
-    {
         [JsonProperty("text")]
         public string Text { get; set; }
-    }
-    public class MediaMessage
-    {
         [JsonProperty("mediatype")]
-        public string? MediaType { get; set; }
+        public string? mediatype { get; set; }
+        [JsonProperty("mimetype")]
+        public string? mimetype { get; set; }
         [JsonProperty("caption")]
-        public string? Caption { get; set; }
-        [JsonProperty("media")]
-        public string Base64 { get; set; }
+        public string caption { get; set; }
+        [JsonProperty("media")] 
+        public string? media { get; set; }
+        [JsonProperty("fileName")]
+        public string? fileName { get; set; }
     }
-
-    
 }

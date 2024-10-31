@@ -40,7 +40,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             try
             {
-                string urlEvolution = SetUrl(sendMessageEvolution?.MediaMessage?.MediaType, instanceName);
+                string urlEvolution = SetUrl(sendMessageEvolution?.mediatype, instanceName);
                 var client = _httpClientFactory.CreateClient();
                 string requestBodyJson = SerializeObjectToJson(sendMessageEvolution);
                 AddApiKeyHeader(client);
@@ -58,7 +58,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         private string SetUrl(string? mediaType, string? instanceName = null)
         {
-            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
 
             if (mediaType == _instance)
             {
@@ -70,7 +70,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         public async Task<ConnectInstanceDTO?> ConnectInstance(string instanceName)
         {
-            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
             var client = _httpClientFactory.CreateClient();
 
             try
@@ -97,7 +97,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         public async Task<List<InstancesDTO>?> FetchInstances()
         {
-            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
             var client = _httpClientFactory.CreateClient();
 
             try
@@ -118,7 +118,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         public async void LogoutInstances(string instanceName)
         {
-            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
             var client = _httpClientFactory.CreateClient();
 
             try
@@ -137,7 +137,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         public async void DeleteInstances(string instanceName)
         {
-            var url = _configuration.GetSection("Urls:UrlEvolutionApi").Value;
+            var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
             var client = _httpClientFactory.CreateClient();
 
             try
@@ -158,9 +158,10 @@ namespace API_MessageTrigger.Infra.CrossCutting
             return JsonConvert.SerializeObject(obj);
         }
 
-        private static void AddApiKeyHeader(HttpClient client)
+        private void AddApiKeyHeader(HttpClient client)
         {
-            client.DefaultRequestHeaders.Add("apikey", "B6D711FCDE4D4FD5936544120E713976");
+            var apiKey = _configuration.GetSection("Evolution:Apikey").Value;
+            client.DefaultRequestHeaders.Add("apikey", apiKey);
         }
 
         private static StringContent CreateJsonHttpContent(string json)
