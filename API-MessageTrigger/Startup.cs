@@ -20,7 +20,11 @@ namespace API_MessageTrigger
             services.AddTransient<IBaseService<MessageTrigger>, BaseService<MessageTrigger>>();
             services.AddTransient<IRequestEvolutionApi, RequestEvolutionApi>();
           
-            services.AddHttpClient();
+            //services.AddHttpClient();
+            services.AddHttpClient("EvolutionAPI", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:8080");
+            });
             services.AddEndpointsApiExplorer();
             services.AddCors(options =>
             {

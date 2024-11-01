@@ -20,7 +20,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             var urlEvolution = SetUrl(_instance);
             var client = _httpClientFactory.CreateClient();
-
+          
             try
             {
                 var requestBodyJson = SerializeObjectToJson(createInstanceEvolution);
@@ -98,12 +98,12 @@ namespace API_MessageTrigger.Infra.CrossCutting
         public async Task<List<InstancesDTO>?> FetchInstances()
         {
             var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("EvolutionAPI");
 
             try
             {
                 AddApiKeyHeader(client);
-                var response = await client.GetAsync($"{url}/instance/fetchInstances");
+                var response = await client.GetAsync("/instance/fetchInstances");
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Não foi possivel realizar a request");
 
