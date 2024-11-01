@@ -103,7 +103,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
             try
             {
                 AddApiKeyHeader(client);
-                var response = await client.GetAsync("/instance/fetchInstances");
+                var response = await client.GetAsync("instance/fetchInstances");
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Não foi possivel realizar a request");
 
