@@ -40,7 +40,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             try
             {
-                var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient("EvolutionAPI");
                 string requestBodyJson = SerializeObjectToJson(sendMessageEvolution);
                 AddApiKeyHeader(client);
                 var httpContent = CreateJsonHttpContent(requestBodyJson);
