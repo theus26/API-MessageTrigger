@@ -19,14 +19,14 @@ namespace API_MessageTrigger.Infra.CrossCutting
         public async Task<bool> CreateInstance(CreateInstanceEvolutionDTO createInstanceEvolution)
         {
             var urlEvolution = SetUrl(_instance);
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("EvolutionAPI");
           
             try
             {
                 var requestBodyJson = SerializeObjectToJson(createInstanceEvolution);
                 AddApiKeyHeader(client);
                 var httpContent = CreateJsonHttpContent(requestBodyJson);
-                var response = await client.PostAsync(urlEvolution, httpContent);
+                var response = await client.PostAsync("instance/create", httpContent);
                 return response.IsSuccessStatusCode;
 
             }
@@ -40,14 +40,20 @@ namespace API_MessageTrigger.Infra.CrossCutting
         {
             try
             {
-                string urlEvolution = SetUrl(sendMessageEvolution?.mediatype, instanceName);
                 var client = _httpClientFactory.CreateClient();
                 string requestBodyJson = SerializeObjectToJson(sendMessageEvolution);
                 AddApiKeyHeader(client);
                 var httpContent = CreateJsonHttpContent(requestBodyJson);
-                var response = await client.PostAsync(urlEvolution, httpContent);
-
-                return response.IsSuccessStatusCode;
+                if (sendMessageEvolution?.mediatype is null)
+                {
+                    var response = await client.PostAsync($"message/sendText/{instanceName}", httpContent);
+                    return response.IsSuccessStatusCode;
+                }
+                else
+                {
+                    var response = await client.PostAsync($"message/sendMedia/{instanceName}", httpContent);
+                    return response.IsSuccessStatusCode;
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -71,12 +77,12 @@ namespace API_MessageTrigger.Infra.CrossCutting
         public async Task<ConnectInstanceDTO?> ConnectInstance(string instanceName)
         {
             var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("EvolutionAPI");
 
             try
             {
                 AddApiKeyHeader(client);
-                var response = await client.GetAsync($"{url}/instance/connect/{instanceName}");
+                var response = await client.GetAsync($"instance/connect/{instanceName}");
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Não foi possivel realizar a request");
 
@@ -119,12 +125,12 @@ namespace API_MessageTrigger.Infra.CrossCutting
         public async void LogoutInstances(string instanceName)
         {
             var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("EvolutionAPI");
 
             try
             {
                 AddApiKeyHeader(client);
-                var response = await client.DeleteAsync($"{url}/instance/logout/{instanceName}");
+                var response = await client.DeleteAsync($"instance/logout/{instanceName}");
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Não foi possivel realizar a request");
 
@@ -138,12 +144,12 @@ namespace API_MessageTrigger.Infra.CrossCutting
         public async void DeleteInstances(string instanceName)
         {
             var url = _configuration.GetSection("Evolution:UrlEvolutionApi").Value;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("EvolutionAPI");
 
             try
             {
                 AddApiKeyHeader(client);
-                var response = await client.DeleteAsync($"{url}/instance/delete/{instanceName}");
+                var response = await client.DeleteAsync($"instance/delete/{instanceName}");
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Não foi possivel realizar a request");
             }
@@ -160,8 +166,7 @@ namespace API_MessageTrigger.Infra.CrossCutting
 
         private void AddApiKeyHeader(HttpClient client)
         {
-            var apiKey = _configuration.GetSection("Evolution:Apikey").Value;
-            client.DefaultRequestHeaders.Add("apikey", apiKey);
+            client.DefaultRequestHeaders.Add("apikey", "hxq4qJHh21goZCqi3rOnS8Hs59ooaDpo");
         }
 
         private static StringContent CreateJsonHttpContent(string json)
